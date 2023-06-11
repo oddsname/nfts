@@ -76,6 +76,7 @@ contract RandomIPFS_NFT is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
             revert RandomIPFS_NFT_NeedMoreETH();
         }
 
+        //request random number from chainlink
         uint256 requestId = i_vrfCoordinator.requestRandomWords(
             i_gasLane,
             i_subscriptionId,
@@ -97,6 +98,7 @@ contract RandomIPFS_NFT is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
         }
     }
 
+    //chainlink calls this function with random number when we request a random number
     function fulfillRandomWords(uint256 requestId, uint256[] memory randomWords) internal override {
         address dogOwner = s_requestToSender[requestId];
         uint256 newTokenId = s_tokenCounter;
