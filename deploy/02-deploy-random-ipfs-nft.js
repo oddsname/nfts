@@ -23,7 +23,7 @@ module.exports = async ({ getNamedAccounts, deployments, network}) => {
         const vrfCoordinatorMock = await ethers.getContract('VRFCoordinatorV2Mock', deployer)
         const tx = await vrfCoordinatorMock.createSubscription();
         const txReceipt = await tx.wait(1);
-        subId = txReceipt.event[0].args.subId
+        subId = txReceipt.events[0].args.subId
         vrfCoordinatorAddress = vrfCoordinatorMock.address
     } else {
         vrfCoordinatorAddress = networkConfig[chainId].vrfCoordinatorV2;
@@ -36,9 +36,24 @@ module.exports = async ({ getNamedAccounts, deployments, network}) => {
         subId,
         networkConfig[chainId].gasLane,
         networkConfig[chainId].gasLimit,
-        [],
+        tokenUris,
         networkConfig[chainId].mintFee
     ];
+
+    const randomIPFSNFT = await deploy('RandomIPFS_NFT', {
+        from: deployer,
+        args,
+        log: true,
+        waitConfirmations: network.config.blockConfirmations || 1
+    })
+
+    log('RandomNFT deployed');
+    if(!developmentChains.includes(network.name) && process.env.ETHERSCAN_KEY) {
+        log('Verifying Contract...')
+        await verify(randomIPFSNFT.address, args);
+        log('Contract verified')
+    }
+    log('------------');
 }
 
 module.exports.tags = ['all', 'random-nft'];

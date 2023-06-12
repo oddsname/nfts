@@ -21,7 +21,8 @@ const storeNFTs = async (imagePaths) => {
 
        const file = new File([fileContent], path.basename(filePath), { type: 'png' })
 
-       const fileName = filePath.split('/').pop().replace('.png', '');
+       let fileName = filePath.split('/').pop();
+       fileName = fileName.replace('.png', '');
 
        const response = await nftStorage.store({
            image: file,

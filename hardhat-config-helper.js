@@ -9,6 +9,7 @@ const networkConfig = {
         subscriptionId: '2515',
         gasLimit: '500000',
         interval: '30',
+        mintFee: "10000000000000000"// 0.01 ETH
     },
     31337: {
         name: 'hardhat',
@@ -16,6 +17,7 @@ const networkConfig = {
         gasLane: '0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c', //this value not matter in local network
         gasLimit: '500000',
         interval: '30',
+        mintFee: "10000000000000000"// 0.01 ETH
     }
 }
 
