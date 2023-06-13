@@ -4,6 +4,14 @@ const {ethers} = require("hardhat");
 const { storeNFTs } = require('../utils/uploadToNftStorage')
 const path = require("path");
 
+const FUND_AMOUNT = ethers.utils.parseUnits('1', 'ether')
+
+const generatedTokenURI = [
+    'ipfs://bafyreif4zieo5ypuzynouu2crh4qdwnrnhaoaiy6ea4c2x3yilwyubpsmm/metadata.json',
+    'ipfs://bafyreiehq2yg6pkmbwtey2osrfdoelvj5m5fpzonf6bm6jlky6rm7szeem/metadata.json',
+    'ipfs://bafyreig6shgydpkas2uim5tp7xoywl4fzkor4alw2gzqgvustcdglez65i/metadata.json'
+];
+
 module.exports = async ({ getNamedAccounts, deployments, network}) => {
     const {deploy, log} = deployments;
     const {deployer} = await getNamedAccounts();
@@ -17,6 +25,10 @@ module.exports = async ({ getNamedAccounts, deployments, network}) => {
             path.resolve(__dirname, '..', 'img', 'shiba-inu.png'),
             path.resolve(__dirname, '..', 'img', 'st-bernard.png'),
         ])
+
+        console.log(tokenUris);
+    } else {
+        tokenUris = generatedTokenURI;
     }
 
     if(developmentChains.includes(network.name)) {
@@ -25,6 +37,7 @@ module.exports = async ({ getNamedAccounts, deployments, network}) => {
         const txReceipt = await tx.wait(1);
         subId = txReceipt.events[0].args.subId
         vrfCoordinatorAddress = vrfCoordinatorMock.address
+        await vrfCoordinatorMock.fundSubscription(subId, FUND_AMOUNT);
     } else {
         vrfCoordinatorAddress = networkConfig[chainId].vrfCoordinatorV2;
         subId = networkConfig[chainId].subscriptionId;
