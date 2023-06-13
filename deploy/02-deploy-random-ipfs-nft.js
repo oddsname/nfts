@@ -4,7 +4,7 @@ const {ethers} = require("hardhat");
 const { storeNFTs } = require('../utils/uploadToNftStorage')
 const path = require("path");
 
-const FUND_AMOUNT = ethers.utils.parseUnits('1', 'ether')
+const FUND_AMOUNT = ethers.utils.parseEther('50');
 
 const generatedTokenURI = [
     'ipfs://bafyreif4zieo5ypuzynouu2crh4qdwnrnhaoaiy6ea4c2x3yilwyubpsmm/metadata.json',
@@ -17,7 +17,7 @@ module.exports = async ({ getNamedAccounts, deployments, network}) => {
     const {deployer} = await getNamedAccounts();
     const chainId = network.config.chainId;
 
-    let vrfCoordinatorAddress, subId, tokenUris;
+    let vrfCoordinatorAddress, vrfCoordinatorMock, subId, tokenUris;
 
     if(process.env.UPLOAD_NFT === 'true') {
         tokenUris = await storeNFTs([
@@ -32,7 +32,7 @@ module.exports = async ({ getNamedAccounts, deployments, network}) => {
     }
 
     if(developmentChains.includes(network.name)) {
-        const vrfCoordinatorMock = await ethers.getContract('VRFCoordinatorV2Mock', deployer)
+        vrfCoordinatorMock = await ethers.getContract('VRFCoordinatorV2Mock', deployer)
         const tx = await vrfCoordinatorMock.createSubscription();
         const txReceipt = await tx.wait(1);
         subId = txReceipt.events[0].args.subId
@@ -65,6 +65,12 @@ module.exports = async ({ getNamedAccounts, deployments, network}) => {
         log('Verifying Contract...')
         await verify(randomIPFSNFT.address, args);
         log('Contract verified')
+    } else {
+        await vrfCoordinatorMock.addConsumer(
+            subId,
+            randomIPFSNFT.address
+        );
+        console.log("Consumer added to the mock")
     }
     log('------------');
 }

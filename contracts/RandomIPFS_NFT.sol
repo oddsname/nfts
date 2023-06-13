@@ -37,7 +37,7 @@ contract RandomIPFS_NFT is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
     uint32 private constant NUM_WORDS = 1;
 
-    mapping(uint256 => address) public s_requestToSender;
+    mapping(uint256 => address) internal s_requestToSender;
     string[] internal s_dogTokenUri;
 
     uint256 public s_tokenCounter;
@@ -69,6 +69,10 @@ contract RandomIPFS_NFT is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
 
     function getTokenCounter() public view returns(uint256) {
         return s_tokenCounter;
+    }
+
+    function getSender(uint256 requestId) public view returns(address) {
+        return s_requestToSender[requestId];
     }
 
     function requestNft() public payable {
@@ -107,7 +111,7 @@ contract RandomIPFS_NFT is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
         uint256 moddedRng = randomWords[0] % 100;
 
         Breed dogBreed = getBreedFromModdedRng(moddedRng);
-        s_tokenCounter += s_tokenCounter;
+        s_tokenCounter = s_tokenCounter + 1;
 
         _safeMint(dogOwner, newTokenId);
         _setTokenURI(newTokenId, s_dogTokenUri[uint256(dogBreed)]);
@@ -116,14 +120,13 @@ contract RandomIPFS_NFT is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
     }
 
     function getBreedFromModdedRng(uint256 moddedRng) public pure returns (Breed) {
-        uint256 cumulativeSum = 0;
         uint8[3] memory chanceArray = getChanceArray();
 
+        //uint256 can't be lower than 0
         for(uint256 i = 0; i< chanceArray.length; i++) {
-            if(moddedRng >= cumulativeSum && moddedRng < cumulativeSum + chanceArray[i]) {
+            if(moddedRng < chanceArray[i]) {
                 return Breed(i);
             }
-            cumulativeSum += chanceArray[i];
         }
 
         revert RandomIPFS_NFT_RangeOutOfBounds();
