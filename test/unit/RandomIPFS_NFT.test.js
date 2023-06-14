@@ -10,7 +10,7 @@ const {assert, expect} = require("chai");
         beforeEach(async () => {
             deployer = (await getNamedAccounts()).deployer;
 
-            await deployments.fixture(['all']);
+            await deployments.fixture(['mocks', 'random-nft']);
 
             randomNFT = await ethers.getContract('RandomIPFS_NFT', deployer);
             vrfCoordinator = await ethers.getContract('VRFCoordinatorV2Mock', deployer);
