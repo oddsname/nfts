@@ -9,7 +9,8 @@ const networkConfig = {
         subscriptionId: '2515',
         gasLimit: '500000',
         interval: '30',
-        mintFee: "10000000000000000"// 0.01 ETH
+        mintFee: "10000000000000000",// 0.01 ETH
+        ethUsdPriceFeed: '0x694AA1769357215DE4FAC081bf1f309aDC325306'
     },
     31337: {
         name: 'hardhat',
