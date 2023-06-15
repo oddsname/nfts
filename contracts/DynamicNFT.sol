@@ -17,6 +17,8 @@ contract DynamicNFT is ERC721 {
 
     constructor(string memory lowSvg, string memoryHighSvg) ERC721 ("Dynamic", "DYN") {
         s_tokenCounter = 0;
+
+
     }
 
     function svgToImageUri(string memory svg) public pure returns (string memory) {
@@ -27,6 +29,26 @@ contract DynamicNFT is ERC721 {
 
         //string concatination
         return string(abi.encodedPacked(base64EncodedSvgPrefix, svgBase64Encoded));
+    }
+
+    function _baseURI() internal pure override returns(string memory) {
+        return "data:application/json;base64,";
+    }
+
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        require(_exists(tokenId), "URI Query for nonexistent token");
+        string imgURI = '';
+
+        string json = abi.encodePacked(
+            '{"name":"', name(), '"',
+            '"description": "An NFT"',
+            '"attributes": [{"trait_type": "coolnes", "value": 100}]',
+            '"image": "',  imgURI, '"}'
+        );
+
+        string base64Json = Base64.encode(bytes(json));
+
+        return string(abi.encodePacked(_baseURI(), base64Json));
     }
 
     function mintNft() public {
