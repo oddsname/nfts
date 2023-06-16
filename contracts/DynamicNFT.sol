@@ -38,6 +38,14 @@ contract DynamicNFT is ERC721 {
         return address(i_priceFeed);
     }
 
+    function getLowImgUri() public view returns(string memory) {
+        return i_lowSvgUri;
+    }
+
+    function getHighImgUri() public view returns(string memory) {
+        return i_highSvgUri;
+    }
+
     function svgToImageUri(string memory svg) public pure returns (string memory) {
         //convert image data to base64
         string memory svgBase64Encoded = Base64.encode(
