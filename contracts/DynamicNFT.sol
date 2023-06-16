@@ -4,6 +4,7 @@ pragma solidity ^0.8.7;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "base64-sol/base64.sol";
+import "hardhat/console.sol";
 
 contract DynamicNFT is ERC721 {
     //mint nft
@@ -27,6 +28,7 @@ contract DynamicNFT is ERC721 {
 
         i_lowSvgUri = svgToImageUri(lowSvg);
         i_highSvgUri = svgToImageUri(highSvg);
+
         i_priceFeed = AggregatorV3Interface(priceFeed);
     }
 
@@ -67,14 +69,16 @@ contract DynamicNFT is ERC721 {
 
         string memory imgURI = i_lowSvgUri;
 
-        if(answer >= s_tokenIdToValue[tokenId]) {
+        console.log(uint256(answer / 1 ether), uint256(s_tokenIdToValue[tokenId]));
+
+        if(answer / 1 ether <= s_tokenIdToValue[tokenId]) {
             imgURI = i_highSvgUri;
         }
 
         bytes memory json = abi.encodePacked(
-            '{"name":"', name(), '"',
-            '"description": "An NFT"',
-            '"attributes": [{"trait_type": "coolnes", "value": 100}]',
+            '{"name":"', name(), '",',
+            '"description": "An NFT",',
+            '"attributes": [{"trait_type": "coolnes", "value": 100}],',
             '"image": "',  imgURI, '"}'
         );
 
