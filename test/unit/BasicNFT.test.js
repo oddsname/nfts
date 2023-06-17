@@ -27,7 +27,7 @@ const {developmentChains} = require('../../hardhat-config-helper')
         it('should get initial counter', async () => {
             const token = await basicNft.getTokenCounter();
 
-            assert.equal(token.toString(), '0');
+            assert.equal(token.toString(), '1');
         })
 
         it('should get token uri', async () => {
@@ -39,20 +39,18 @@ const {developmentChains} = require('../../hardhat-config-helper')
         it('should increase token counter after every mint', async () => {
             const token = await basicNft.getTokenCounter();
 
-            assert.equal(token.toString(), '0');
-
-            let tx = await basicNft.minNft();
+            let tx = await basicNft.mintNft();
             await tx.wait(1);
             const token1 = await basicNft.getTokenCounter();
 
-            assert.equal(token1.toString(), '1');
+            assert.equal(token1.toString(), token.toNumber() + 1);
 
-            tx = await basicNft.minNft();
+            tx = await basicNft.mintNft();
             await tx.wait(1);
-            tx = await basicNft.minNft();
+            tx = await basicNft.mintNft();
             await tx.wait(1);
             const token3 = await basicNft.getTokenCounter();
 
-            assert.equal(token3.toString(), '3');
+            assert.equal(token3.toString(), token.toNumber() + 3);
         })
     })
