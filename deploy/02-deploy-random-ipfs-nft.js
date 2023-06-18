@@ -75,4 +75,4 @@ module.exports = async ({ getNamedAccounts, deployments, network}) => {
     log('------------');
 }
 
-module.exports.tags = ['all', 'random-nft'];
+module.exports.tags = ['all', 'random-nft', 'main'];

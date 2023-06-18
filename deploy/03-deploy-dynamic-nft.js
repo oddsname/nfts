@@ -42,4 +42,4 @@ module.exports = async ({getNamedAccounts, deployments, network}) => {
     }
 }
 
-module.exports.tags = ['all', 'dynamic-nft'];
+module.exports.tags = ['all', 'dynamic-nft', 'main'];
